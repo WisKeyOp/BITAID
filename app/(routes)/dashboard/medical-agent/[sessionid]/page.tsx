@@ -3,10 +3,11 @@ import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { DoctorAgent } from "../../_components/DoctorAgent";
-import { Circle, Phone, PhoneCall, PhoneOff } from "lucide-react";
+import { Circle,  PhoneCall, PhoneOff } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Vapi from "@vapi-ai/web";
+
 
 function MedicalVoiceAgent() {
   type SessionDetail = {
@@ -16,6 +17,7 @@ function MedicalVoiceAgent() {
     report: JSON;
     selectedDoctor: DoctorAgent;
     createdBy: string;
+    
   };
 
   type message={
@@ -29,7 +31,7 @@ function MedicalVoiceAgent() {
   const [vapiInstance, setVapiInstance] = useState<Vapi | null>(null);  
   const [currentRole, setCurrentRole] = useState<string|null>();
   const [liveTranscripts, setLiveTranscripts] = useState<string>();
-  const [messages, setMessages] = useState<message[]>()
+  const [messages, setMessages] = useState<message[]>([])
 
   
 
@@ -47,7 +49,34 @@ function MedicalVoiceAgent() {
     const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY || "");
     setVapiInstance(vapi);
      setCallStarted(true);
-    vapi.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID);
+
+    const VapiAgentConfig = {
+      name:'AI Medical Doctor Voice Agent',
+      firstMessage: 'Hello, I am your AI Medical Voice Agent. How can I assist you today?',
+
+      transcriber:{
+        provider:'assembly-ai',
+        language:'en'
+      },
+      voice:{
+        provider:'playht',
+        voiceId: sessionDetails?.selectedDoctor?.voiceId 
+      },
+      model:{
+        provider:'openai',
+        modelId:'gpt-4',
+        messages:[
+            {
+                role:'system',
+                content: sessionDetails?.selectedDoctor?.agentPrompt || "You are a medical assistant. Answer the user's questions in a friendly and professional manner."
+            }
+        ]
+      }
+    }
+
+
+    //@ts-ignore
+    vapi.start(VapiAgentConfig);
     vapi.on("call-start", () => {console.log("Call started"); setCallStarted(true)});
     vapi.on("call-end", () => {console.log("Call ended"); setCallStarted(false)});
     vapi.on("message", (message) => {
@@ -112,9 +141,19 @@ function MedicalVoiceAgent() {
             </h2>
             <p className="text-sm text-gray-400">AI Medical Voice Agent</p>
 
-            <div className="mt-32">
+
+            <div className="mt-32 overflow-y-auto display-flex flex-col items-center px-10 md:px-28 lg:px-52">
+              {
+                messages.slice(-4)?.map((msg,index)=>(
+                  <div key={index}>
+                    <h2 className="text-gray-400 p-2">{msg.role}: {msg.text}</h2>
+                  </div>
+                ))
+              }
               <h2 className="text-gray-400">Assistant Msg</h2>
-              <h2 className="text-lg">{currentRole}: {liveTranscripts}</h2>
+              {liveTranscripts && liveTranscripts?.length > 0 && (
+                <h2 className="text-lg">{currentRole}: {liveTranscripts}</h2>
+              )}
             </div>
 
             {!callStarted ?
