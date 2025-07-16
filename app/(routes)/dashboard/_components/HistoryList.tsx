@@ -1,10 +1,21 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import AddNewSession from './AddNewSession'
+import axios from 'axios'
+import HistoryTable from './HistoryTable'
 
 const HistoryList = () => {
     const [historyList,setHistoryList] = useState([])
+    useEffect(()=>{
+      fetchHistory();
+    },[])
+
+    const fetchHistory = async ()=>{
+      const result = await axios.get('/api/session-chat?sessionId=all')
+      console.log(result.data);
+      setHistoryList(result.data);
+    }
   return (
     <div className='mt-10' >
       {historyList.length == 0 ? (
@@ -17,7 +28,7 @@ const HistoryList = () => {
          <AddNewSession/>
         </div>
       ) : (
-        <div>List</div>
+        <div>:<HistoryTable historyList={historyList}/></div>
       )}
     </div>
   )

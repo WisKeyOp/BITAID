@@ -37,11 +37,24 @@ export async function GET(req:NextRequest) {
     const sessionid = searchParams.get("sessionid");
    const user = await currentUser();
    try {
-       const result = await db.select().from(SessionChatTable)
-       //@ts-ignore
-       .where(eq(SessionChatTable.sessionid, sessionid))
-       return NextResponse.json(result[0]);
-   } catch (e) {
-       return NextResponse.json(e);
-   }
-} 
+
+
+    if (sessionid === "all") {
+        const result = await db.select().from(SessionChatTable)
+        //@ts-ignore
+            .where(eq(SessionChatTable.createdBy, user?.primaryEmailAddress?.emailAddress))
+            //@ts-ignore
+            .orderBy(desc(SessionChatTable.id))
+          return NextResponse.json(result);
+    } else {
+        const result = await db.select().from(SessionChatTable)
+        //@ts-ignore
+        .where(eq(SessionChatTable.sessionid, sessionid))
+        return NextResponse.json(result[0]);
+    } 
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: e }, { status: 500 });
+  }
+    
+}
