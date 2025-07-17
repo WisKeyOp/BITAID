@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     report : JSONresp,
     conversation:messages
   }).where(eq(SessionChatTable.sessionid,sessionId))
-  return NextResponse.json(JSONresp)
+  return NextResponse.json(JSONresp, { status: 200 });
   } catch (error) {
     console.error("Error generating report:", error);
     return NextResponse.json({ error: "Failed to generate report" }, { status: 500 });

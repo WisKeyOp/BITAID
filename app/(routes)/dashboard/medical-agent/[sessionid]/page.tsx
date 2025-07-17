@@ -7,18 +7,35 @@ import { Circle,  Loader,  PhoneCall, PhoneOff } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Vapi from "@vapi-ai/web";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
+
+
+export type MedicalReport = {
+  agent: string;
+  user: string;
+  timestamp: string;
+  chiefComplaint: string;
+  summary: string[];
+  symptoms: string;
+  duration: string;
+  severity: string;
+  medicationsMentioned: string[];
+  recommendations: string[];
+}; 
+
 
 export type SessionDetail = {
     id: number;
     notes: string;
     sessionId: string;
-    report: JSON;
+    report: MedicalReport;
     selectedDoctor: DoctorAgent;
     createdBy: string;
     createdOn: string;
   };
+
+
 
   
   type message={
@@ -60,7 +77,7 @@ function MedicalVoiceAgent() {
       })
       
       console.log(result.data);
-      
+    
     }
 
   const startCall = async () => {

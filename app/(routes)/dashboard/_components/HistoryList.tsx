@@ -12,7 +12,7 @@ const HistoryList = () => {
     },[])
 
     const fetchHistory = async ()=>{
-      const result = await axios.get('/api/session-chat?sessionId=all')
+      const result = await axios.get('/api/session-chat?sessionid=all')
       console.log(result.data);
       setHistoryList(result.data);
     }
@@ -28,7 +28,7 @@ const HistoryList = () => {
          <AddNewSession/>
         </div>
       ) : (
-        <div>:<HistoryTable historyList={historyList}/></div>
+        <div><HistoryTable historyList={historyList}/></div>
       )}
     </div>
   )
