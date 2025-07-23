@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
     const user = await currentUser();
     try {
         const sessionid = uuidv4();
+        
         const result = await db.insert(SessionChatTable).values({
             sessionid: sessionid,
             createdBy: user?.primaryEmailAddress?.emailAddress,

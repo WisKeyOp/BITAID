@@ -79,40 +79,11 @@ function MedicalVoiceAgent() {
       console.log(result.data);
     
     }
-
-  const startCall = async () => {
+const startCall = async () => {
     const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY || "");
     setVapiInstance(vapi);
      setCallStarted(true);
-
-    const VapiAgentConfig = {
-      name:'AI Medical Doctor Voice Agent',
-      firstMessage: 'Hello, I am your AI Medical Voice Agent. How can I assist you today?',
-
-      transcriber:{
-        provider:'assembly-ai',
-        language:'en'
-      },
-      voice:{
-        provider:'playht',
-        voiceId: sessionDetails?.selectedDoctor?.voiceId 
-      },
-      model:{
-        provider:'openai',
-        modelId:'gpt-4',
-        messages:[
-            {
-                role:'system',
-                content: sessionDetails?.selectedDoctor?.agentPrompt || "You are a medical assistant. Answer the user's questions in a friendly and professional manner."
-            }
-        ]
-      }
-    }
-
-   
-
-    //@ts-ignore
-    vapi.start(VapiAgentConfig);
+    vapi.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID);
     vapi.on("call-start", () => {console.log("Call started"); setCallStarted(true)});
     vapi.on("call-end", () => {console.log("Call ended"); setCallStarted(false)});
     vapi.on("message", (message) => {
@@ -142,20 +113,20 @@ function MedicalVoiceAgent() {
 
 
    const endCall = async () => {
-    setLoading(true);
     if (!vapiInstance) return;
     vapiInstance.stop();
-   
-   
-    setCallStarted(false);
+   setLoading(true);
+   setCallStarted(false);
     setVapiInstance(null);
-    const result = await  GenerateReport();
+     const result = await  GenerateReport();
     console.log("Call ended and report generated", result);
     setLoading(false);
-    toast.success("Your report is generated.");
+   toast.success("Your report is generated.");
     router.replace('/dashboard');
 
+
   };
+
 
 
   return (

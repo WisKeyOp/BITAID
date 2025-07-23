@@ -15,19 +15,26 @@ const Provider = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const user = useUser();
-  const [userDetail, setUserDetail] = useState<any>();
+ const { user, isSignedIn, isLoaded } = useUser();
+  const [userDetail, setUserDetail] = useState<userDetails|null>(null);
 
- useEffect(() => {
-  if (user && !userDetail) {
-    createNewUser();
-  }
-}, [user, userDetail]);
+ 
   const createNewUser = async () => {
-    const result = await axios.post("/api/users");
-    console.log(result.data);
-    setUserDetail(result.data);
-  };
+   try {
+      const result = await axios.post("/api/users");
+      console.log("User created/fetched:", result.data);
+      setUserDetail(result.data);
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
+  }; 
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn && !userDetail) {
+      createNewUser();
+    }
+  }, [isLoaded, isSignedIn, user, userDetail]);
+
 
   return (
     <div>
