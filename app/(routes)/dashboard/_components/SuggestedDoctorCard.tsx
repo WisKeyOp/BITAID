@@ -8,7 +8,7 @@ type props={
 }
 const SuggestedDoctorCard = ({ doctorAgent , setSelectedDoctor,selectedDoctor}: props) => {
   return (
-    <div className={`flex flex-col items-center border-2 rounded-2xl shadow p-5
+    <div className={`flex flex-col items-center border-2 rounded-2xl w-[200px] shadow p-5
     hover:border-blue-500 cursor-pointer ${
       selectedDoctor && selectedDoctor.id === doctorAgent.id ? 'border-blue-500' : ''
     }`}

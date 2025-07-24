@@ -71,8 +71,10 @@ const AddNewSession = () => {
                 ></Textarea>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-4 mt-5">
-                <h2>Select the doctor</h2>
+              <div>
+               <h2>Select the doctor</h2>
+              <div className="flex  flex-wrap gap-4 mt-5">
+               
                 {Array.isArray(suggestedDoctors) &&suggestedDoctors.map((doctor, index) => (
                   <SuggestedDoctorCard
                     doctorAgent={doctor}
@@ -81,6 +83,7 @@ const AddNewSession = () => {
                     selectedDoctor={selectedDoctor}
                   />
                 ))}
+              </div>
               </div>
             )}
           </DialogDescription>

@@ -20,7 +20,7 @@ const HistoryList = () => {
     <div className='mt-10' >
       {historyList.length == 0 ? (
         <div className='flex items-center justify-center flex-col border-dashed rounded-2xl border-2 p-7 '>
-          <Image src={'/medical-assistant.png'} alt='empty'
+          <Image src="/logo.svg" alt='empty'
             width={150}
             height={150}/>
           <h2 className='font-bold text-xl mt-2'>No Recent Consultations</h2>
