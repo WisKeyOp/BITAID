@@ -7,9 +7,38 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { SessionDetail } from '../medical-agent/[sessionid]/page'
 import moment from 'moment'
+
+// Custom button component that renders as a span to avoid nested buttons
+const CustomTrigger = React.forwardRef<
+  HTMLSpanElement,
+  React.HTMLAttributes<HTMLSpanElement> & {
+    asChild?: boolean
+  }
+>(({ className, children, ...props }, ref) => {
+  return (
+    <span
+      ref={ref}
+      className={cn(
+        'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'disabled:pointer-events-none disabled:opacity-50',
+        'text-primary underline-offset-4 hover:underline',
+        'h-9 rounded-md px-3',
+        'text-sm',
+        className
+      )}
+      role="button"
+      tabIndex={0}
+      {...props}
+    >
+      {children}
+    </span>
+  )
+})
+CustomTrigger.displayName = 'CustomTrigger'
 
 type props = {
   record: SessionDetail
@@ -20,8 +49,8 @@ const ViewReportDialog = ({ record }: props) => {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button variant={"link"} size={"sm"}>View Report</Button>
+      <DialogTrigger asChild>
+        <CustomTrigger>View Report</CustomTrigger>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
