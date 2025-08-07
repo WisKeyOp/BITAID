@@ -43,20 +43,77 @@ export type SessionDetail = {
     text:string,
   }
 function MedicalVoiceAgent() {
-
-
-  
-
-
   const { sessionid } = useParams();
+  const router = useRouter();
+  
+  // State management
   const [sessionDetails, setSessionDetails] = useState<SessionDetail>();
   const [callStarted, setCallStarted] = useState<boolean>(false);
-  const [vapiInstance, setVapiInstance] = useState<Vapi | null>(null);  
-  const [currentRole, setCurrentRole] = useState<string|null>();
-  const [liveTranscripts, setLiveTranscripts] = useState<string>();
+  const [vapiInstance, setVapiInstance] = useState<Vapi | null>(null);
+  const [currentRole, setCurrentRole] = useState<string | null>(null);
+  const [liveTranscripts, setLiveTranscripts] = useState<string>("");
   const [messages, setMessages] = useState<message[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
+  
+  // Initialize Vapi instance
+  useEffect(() => {
+    const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY || "");
+    setVapiInstance(vapi);
+    
+    // Set up event listeners
+    vapi.on("call-start", () => {
+      console.log("Call started");
+      setCallStarted(true);
+      setLoading(false);
+    });
+    
+    vapi.on("call-end", () => {
+      console.log("Call ended");
+      setCallStarted(false);
+      setLoading(false);
+      GenerateReport();
+    });
+    
+    vapi.on("error", (error: any) => {
+      console.error("Vapi error:", error);
+      setLoading(false);
+      setCallStarted(false);
+      toast.error("Failed to start the call. Please try again.");
+    });
+    
+    vapi.on("message", (message: any) => {
+      if (message.type === "transcript") {
+        const { role, transcriptType, transcript } = message;
+        console.log(`${role}: ${transcript}`);
+        
+        if (transcriptType === 'partial') {
+          setLiveTranscripts(transcript);
+          setCurrentRole(role);
+        } else if (transcriptType === 'final') {
+          setMessages(prev => [...prev, { role, text: transcript }]);
+          setLiveTranscripts("");
+          setCurrentRole(null);
+        }
+      }
+    });
+    
+    vapi.on('speech-start', () => {
+      console.log('Assistant started speaking');
+      setCurrentRole('assistant');
+    });
+    
+    // Clean up on unmount
+    return () => {
+      if (vapi) {
+        vapi.stop();
+      }
+    };
+  }, []);
+  
+  // Fetch session details
+  useEffect(() => {
+    GetsessionDetails();
+  }, [sessionid]);
   
 
   useEffect(() => {
@@ -64,67 +121,77 @@ function MedicalVoiceAgent() {
   }, [sessionid]);
 
   const GetsessionDetails = async () => {
-    const result = await axios.get("/api/session-chat?sessionid=" + sessionid);
-    console.log(result.data);
-    setSessionDetails(result.data);
-  };
-
-   const GenerateReport = async ()=> {
-      const result = await axios.post('/api/medical-report',{
-        messages:messages,
-        sessionDetail: sessionDetails,
-        sessionId:sessionid,
-      })
-      
-      console.log(result.data);
-    
+    try {
+      const result = await axios.get(`/api/session-chat?sessionid=${sessionid}`);
+      setSessionDetails(result.data);
+    } catch (error) {
+      console.error("Error fetching session details:", error);
+      toast.error("Failed to load session details");
     }
-const startCall = async () => {
-    const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY || "");
-    setVapiInstance(vapi);
-     setCallStarted(true);
-    vapi.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID);
-    vapi.on("call-start", () => {console.log("Call started"); setCallStarted(true)});
-    vapi.on("call-end", () => {console.log("Call ended"); setCallStarted(false)});
-    vapi.on("message", (message) => {
-      if (message.type === "transcript") {
-        const {role,transcriptType,transcript} = message;
-        console.log(`${message.role}: ${message.transcript}`);
-        if (transcriptType === 'partial') {
-          setLiveTranscripts(transcript);
-          setCurrentRole(role);
-        }
-        else if(transcriptType=='final'){
-          setMessages((prev: any)=>[...prev,{role:role,text:transcript}])
-          setLiveTranscripts("");
-          setCurrentRole(null);
-        }
-      }
-    });
-     vapi.on('speech-start', () => {
-      console.log('Assistant started speaking');
-      setCurrentRole('assistant');
-    });
-    vapi.on('speech-end', () => {
-      console.log('Assistant stopped speaking');
-      setCurrentRole('user');
-    });
   };
 
+  const GenerateReport = async () => {
+    if (!sessionDetails) return null;
+    
+    try {
+      const result = await axios.post('/api/medical-report', {
+        messages: messages,
+        sessionDetail: sessionDetails,
+        sessionId: sessionid,
+      });
+      
+      console.log("Generated report:", result.data);
+      return result.data;
+    } catch (error) {
+      console.error("Error generating report:", error);
+      toast.error("Failed to generate report");
+      return null;
+    }
+  };
 
-   const endCall = async () => {
+  const startCall = async () => {
+    if (!vapiInstance) {
+      toast.error("Voice service not initialized");
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+      
+      if (!assistantId) {
+        throw new Error("Vapi assistant ID is not configured");
+      }
+      
+      await vapiInstance.start(assistantId);
+      
+    } catch (error) {
+      console.error("Error starting call:", error);
+      setLoading(false);
+      setCallStarted(false);
+      toast.error("Failed to start the call. Please try again.");
+    }
+  };
+
+  const endCall = async () => {
     if (!vapiInstance) return;
-    vapiInstance.stop();
-   setLoading(true);
-   setCallStarted(false);
-    setVapiInstance(null);
-     const result = await  GenerateReport();
-    console.log("Call ended and report generated", result);
-    setLoading(false);
-   toast.success("Your report is generated.");
-    router.replace('/dashboard');
-
-
+    
+    try {
+      setLoading(true);
+      await vapiInstance.stop();
+      setCallStarted(false);
+      
+      const result = await GenerateReport();
+      console.log("Call ended and report generated", result);
+      
+      toast.success("Your report is generated.");
+      router.replace('/dashboard');
+    } catch (error) {
+      console.error("Error ending call:", error);
+      toast.error("Failed to end the call properly");
+    } finally {
+      setLoading(false);
+    }
   };
 
 

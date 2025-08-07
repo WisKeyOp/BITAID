@@ -15,7 +15,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { ArrowRight, Loader2 } from "lucide-react";
 import axios from "axios";
 import { DoctorAgent } from "./DoctorAgent";
-import SuggestedDoctorCard from "./SuggestedDoctorCard";
+import { SuggestedDoctorCard } from "./SuggestedDoctorCard";
 import { useRouter } from "next/navigation";
 
 const AddNewSession = () => {
@@ -54,8 +54,8 @@ const AddNewSession = () => {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button className="mt-4">Start a Consultation</Button>
+      <DialogTrigger asChild>
+        <Button className="mt-4" type="button">Start a Consultation</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -88,25 +88,37 @@ const AddNewSession = () => {
             )}
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <DialogClose>
-            <Button variant={"outline"}>Cancel</Button>
+        <DialogFooter className="flex justify-end gap-2">
+          <DialogClose asChild>
+            <Button variant="outline" type="button">
+              Cancel
+            </Button>
           </DialogClose>
 
           {suggestedDoctors.length === 0 ? (
-            <Button disabled={!note || loading} onClick={OnClickNext}>
-              {" "}
+            <Button 
+              disabled={!note || loading} 
+              onClick={OnClickNext}
+              type="button"
+            >
+              {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
               Next
-              {loading ? <Loader2 className="animate-spin" /> : <ArrowRight />}
+              {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
             </Button>
           ) : (
             <Button
-              disabled={loading ||!selectedDoctor}
+              disabled={!selectedDoctor || loading}
               onClick={onStartConsultation}
+              type="button"
             >
-              
-              Start Consultation
-              {loading ? <Loader2 className="animate-spin" /> : <ArrowRight />}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Starting...
+                </>
+              ) : (
+                "Start Consultation"
+              )}
             </Button>
           )}
         </DialogFooter>
