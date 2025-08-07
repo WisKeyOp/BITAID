@@ -10,29 +10,26 @@ const Dashboard = () => {
       {/* Page Header */}
       <header className="flex items-center justify-between pb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Dashboard</h1>
-          <p className="mt-1 text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight text-white">My Dashboard</h1>
+          <p className="mt-1 text-gray-300">
             Manage your medical consultations and view your history.
           </p>
         </div>
         <AddNewSession />
       </header>
 
-      {/* Responsive Grid Layout */}
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
-        {/* Main Content Area */}
-        <div className="lg:col-span-2">
-          <Suspense fallback={<HistorySkeleton />}>
-            <HistoryList />
-          </Suspense>
-        </div>
+      {/* Main Content - History First */}
+      <div className="mb-12">
+        <Suspense fallback={<HistorySkeleton />}>
+          <HistoryList />
+        </Suspense>
+      </div>
 
-        {/* Sidebar Area */}
-        <div className="lg:col-span-1">
-          <Suspense fallback={<DoctorCardSkeleton />}>
-            <DoctorsAgentList />
-          </Suspense>
-        </div>
+      {/* Doctor Cards Below History */}
+      <div className="mt-16">
+        <Suspense fallback={<DoctorCardSkeleton />}>
+          <DoctorsAgentList />
+        </Suspense>
       </div>
     </div>
   );

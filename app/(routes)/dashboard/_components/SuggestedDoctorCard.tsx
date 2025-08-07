@@ -21,9 +21,11 @@ const SuggestedDoctorCard = ({ doctorAgent, setSelectedDoctor, selectedDoctor }:
           setSelectedDoctor(doctorAgent);
         }
       }}
-      className={`flex flex-col items-center border-2 rounded-2xl w-full max-w-[200px] shadow p-4 sm:p-5
-      hover:border-blue-500 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-        selectedDoctor?.id === doctorAgent.id ? 'border-blue-500 bg-blue-50' : 'border-transparent'
+      className={`flex flex-col items-center border-2 rounded-2xl w-full max-w-[200px] shadow-lg p-4 sm:p-5
+      hover:border-purple-500 cursor-pointer transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${
+        selectedDoctor?.id === doctorAgent.id 
+          ? 'border-purple-500 bg-gradient-to-br from-purple-900/50 to-blue-900/50' 
+          : 'border-slate-600 bg-slate-800 hover:bg-slate-700'
       }`}
       onClick={() => setSelectedDoctor(doctorAgent)}
       aria-pressed={selectedDoctor?.id === doctorAgent.id}
@@ -42,7 +44,7 @@ const SuggestedDoctorCard = ({ doctorAgent, setSelectedDoctor, selectedDoctor }:
           />
         ) : (
           <div 
-            className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-600"
+            className="w-full h-full bg-slate-600 flex items-center justify-center text-gray-300"
             aria-hidden="true"
           >
             <span className="text-lg font-medium">
@@ -51,11 +53,11 @@ const SuggestedDoctorCard = ({ doctorAgent, setSelectedDoctor, selectedDoctor }:
           </div>
         )}
       </div>
-      <h2 className="font-bold text-center text-sm sm:text-base text-gray-900">
+      <h2 className="font-bold text-center text-sm sm:text-base text-white">
         {doctorAgent.specialist || 'Doctor'}
       </h2>
       {doctorAgent.description && (
-        <p className="text-xs text-center text-gray-600 mt-1 line-clamp-2">
+        <p className="text-xs text-center text-gray-300 mt-1 line-clamp-2">
           {doctorAgent.description}
         </p>
       )}

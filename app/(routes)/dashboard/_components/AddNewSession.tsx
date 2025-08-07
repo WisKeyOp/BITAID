@@ -55,25 +55,25 @@ const AddNewSession = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mt-4" type="button">Start a Consultation</Button>
+        <Button className="mt-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold" type="button">Start a Consultation</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-slate-800 border-slate-600">
         <DialogHeader>
-          <DialogTitle>Add Basic Details</DialogTitle>
+          <DialogTitle className="text-white">Add Basic Details</DialogTitle>
           <DialogDescription asChild>
             {suggestedDoctors.length === 0 ? (
               <div>
-                <h2>Add Symptoms or Any Other Details</h2>
+                <h2 className="text-gray-300 mb-2">Add Symptoms or Any Other Details</h2>
                 <Textarea
-                  className="h-[240px] "
+                  className="h-[240px] bg-slate-700 border-slate-600 text-white placeholder:text-gray-400"
                   placeholder="Describe your symptoms or concerns"
                   onChange={(e) => setNote(e.target.value)}
                 ></Textarea>
               </div>
             ) : (
               <div>
-               <h2>Select the doctor</h2>
-              <div className="flex  flex-wrap gap-4 mt-5">
+               <h2 className="text-gray-300 mb-2">Select the doctor</h2>
+              <div className="flex flex-wrap gap-4 mt-5">
                
                 {Array.isArray(suggestedDoctors) &&suggestedDoctors.map((doctor, index) => (
                   <SuggestedDoctorCard
@@ -90,7 +90,7 @@ const AddNewSession = () => {
         </DialogHeader>
         <DialogFooter className="flex justify-end gap-2">
           <DialogClose asChild>
-            <Button variant="outline" type="button">
+            <Button variant="outline" type="button" className="border-slate-600 text-gray-300 hover:bg-slate-700">
               Cancel
             </Button>
           </DialogClose>
@@ -100,6 +100,7 @@ const AddNewSession = () => {
               disabled={!note || loading} 
               onClick={OnClickNext}
               type="button"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
             >
               {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
               Next
@@ -110,6 +111,7 @@ const AddNewSession = () => {
               disabled={!selectedDoctor || loading}
               onClick={onStartConsultation}
               type="button"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
             >
               {loading ? (
                 <>

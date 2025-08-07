@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -12,7 +12,6 @@ import {
 } from '@clerk/nextjs'
 import Provider from "./provider";
 import { Toaster } from "@/components/ui/sonner";
-import { useEffect } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

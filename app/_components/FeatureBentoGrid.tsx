@@ -34,6 +34,7 @@ export default function FeatureBentoGrid() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
+      className="w-full px-4 py-20"
     >
       <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
         {features.map((item, i) => (
