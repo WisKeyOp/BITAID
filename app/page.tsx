@@ -1,10 +1,9 @@
 "use client";
-import { UserButton, useUser } from "@clerk/nextjs";
 import  BentoGrid  from "./_components/FeatureBentoGrid";
 import { motion } from "motion/react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Image from "next/image";
+import Navbar from "./_components/Navbar";
+import Footer from "./_components/Footer";
 
 export default function HeroSectionOne() {
   return (
@@ -105,39 +104,9 @@ export default function HeroSectionOne() {
         </div>
         <BentoGrid />
       </div>
+      <Footer />
     </div>
   );
 }
 
-const Navbar = () => {
-  const user = useUser();
-  return (
-    <nav className="flex w-full items-center justify-between border-t border-b border-slate-700 px-4 py-4 bg-slate-900/80 backdrop-blur-sm">
-      <div className="flex items-center">
-        {/*<div className="size-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-500" />*/}
-        <div className="relative h-11 w-23">  
-          <Image 
-            src="/logo.png" 
-            alt="Logo" 
-            fill
-            sizes="(max-width: 768px) 150px, 150px"
-            className="object-contain" 
-            priority
-          />
-        </div>
-        <h1 className="text-base font-bold md:text-2xl text-white">BIT-AID</h1>
-      </div>
-     {user ? 
-      <div className="flex items-center gap-4">
-        <UserButton/>
-        <Link href={"/dashboard"}>
-        <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">Dashboard</Button>
-        </Link>
-      </div>:<Link href={"/sign-in"}>
-      <button className="w-24 transform rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 px-6 py-2 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg md:w-32">
-        Login
-      </button>
-      </Link>} 
-    </nav>
-  );
-};
+
