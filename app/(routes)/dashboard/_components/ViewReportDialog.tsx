@@ -52,83 +52,101 @@ const ViewReportDialog = ({ record }: props) => {
       <DialogTrigger asChild>
         <CustomTrigger className="text-violet-400 hover:text-violet-300 underline-offset-4 hover:underline focus-visible:ring-violet-500">View Report</CustomTrigger>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
+      {/* Constrain overall height so inner content can scroll */}
+      <DialogContent className="sm:max-w-2xl max-w-[95vw] max-h-[85vh] p-0 overflow-hidden bg-[#0f0d14]/95 border border-violet-900/40 backdrop-blur">
+        <DialogHeader className="px-6 pt-6 pb-3">
           <DialogTitle asChild>
-            <h2 className='text-center text-2xl'>Medical AI Voice Agent Report</h2>
+            <h2 className="text-center text-2xl">Medical AI Voice Agent Report</h2>
           </DialogTitle>
-          <DialogDescription asChild>
-            <div className='mt-6 space-y-4'>
+        </DialogHeader>
 
+        {/* Scrollable area */}
+        <DialogDescription asChild>
+          <div
+            className="px-6 pb-6 pt-0 overflow-y-auto"
+            style={{ maxHeight: 'calc(85vh - 72px)' }} // subtract header area
+          >
+            <div className="mt-2 space-y-4 divide-y divide-violet-900/40">
               {/* Session Info */}
-              <div>
-                <h2 className='font-bold text-blue-500 text-lg'>Session Info</h2>
-                <p><span className='font-bold'>Doctor</span>: {record.selectedDoctor.specialist}</p>
-                <p><span className='font-bold'>Consulted On</span>: {moment(new Date(record?.createdOn)).format("LLL")}</p>
-              </div>
+              <section className="pt-2">
+                <h2 className="font-bold text-violet-400 text-lg">Session Info</h2>
+                <p className="text-gray-200">
+                  <span className="font-bold">Doctor</span>: {record.selectedDoctor.specialist}
+                </p>
+                <p className="text-gray-200">
+                  <span className="font-bold">Consulted On</span>: {moment(new Date(record?.createdOn)).format("LLL")}
+                </p>
+              </section>
 
               {/* Complaint */}
-              <div>
-                <h2 className='font-bold text-blue-500 text-lg'>Chief Complaint</h2>
-                <p>{report?.chiefComplaint || "N/A"}</p>
-              </div>
+              <section className="pt-4">
+                <h2 className="font-bold text-violet-400 text-lg">Chief Complaint</h2>
+                <p className="text-gray-200">{report?.chiefComplaint || "N/A"}</p>
+              </section>
 
               {/* Summary */}
-              <div>
-                <h2 className='font-bold text-blue-500 text-lg'>Summary</h2>
-                <p>{report?.summary || "N/A"}</p>
-              </div>
+              <section className="pt-4">
+                <h2 className="font-bold text-violet-400 text-lg">Summary</h2>
+                <p className="text-gray-200">{report?.summary || "N/A"}</p>
+              </section>
 
               {/* Symptoms */}
-              <div>
-                <h2 className='font-bold text-blue-500 text-lg'>Symptoms</h2>
-                <p>{report?.symptoms || "N/A"}</p>
-              </div>
+              <section className="pt-4">
+                <h2 className="font-bold text-violet-400 text-lg">Symptoms</h2>
+                <p className="text-gray-200">
+                  {Array.isArray(report?.symptoms) ? report.symptoms.join(', ') : (report?.symptoms || "N/A")}
+                </p>
+              </section>
 
               {/* Duration & Severity */}
-              <div className='grid grid-cols-2 gap-2'>
-                <div>
-                  <h2 className='font-bold text-blue-500 text-lg'>Duration</h2>
-                  <p>{report?.duration || "N/A"}</p>
+              <section className="pt-4">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <h2 className="font-bold text-violet-400 text-lg">Duration</h2>
+                    <p className="text-gray-200">{report?.duration || "N/A"}</p>
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-violet-400 text-lg">Severity</h2>
+                    <p className="text-gray-200">{report?.severity || "N/A"}</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className='font-bold text-blue-500 text-lg'>Severity</h2>
-                  <p>{report?.severity || "N/A"}</p>
-                </div>
-              </div>
+              </section>
 
               {/* Medications */}
-              <div>
-                <h2 className='font-bold text-blue-500 text-lg'>Medications Mentioned</h2>
-                <ul className="list-disc list-inside">
-                  {report?.medicationsMentioned?.map((med: string, idx: number) => (
-                    <li key={idx}>{med}</li>
-                  ))}
+              <section className="pt-4">
+                <h2 className="font-bold text-violet-400 text-lg">Medications Mentioned</h2>
+                <ul className="list-disc list-inside text-gray-200">
+                  {report?.medicationsMentioned?.length
+                    ? report.medicationsMentioned.map((med: string, idx: number) => <li key={idx}>{med}</li>)
+                    : <li className="list-none text-gray-400">N/A</li>
+                  }
                 </ul>
-              </div>
+              </section>
 
               {/* Recommendations */}
-              <div>
-                <h2 className='font-bold text-blue-500 text-lg'>Recommendations</h2>
-                <ul className="list-disc list-inside">
-                  {report?.recommendations?.map((rec: string, idx: number) => (
-                    <li key={idx}>{rec}</li>
-                  ))}
+              <section className="pt-4">
+                <h2 className="font-bold text-violet-400 text-lg">Recommendations</h2>
+                <ul className="list-disc list-inside text-gray-200">
+                  {report?.recommendations?.length
+                    ? report.recommendations.map((rec: string, idx: number) => <li key={idx}>{rec}</li>)
+                    : <li className="list-none text-gray-400">N/A</li>
+                  }
                 </ul>
-              </div>
+              </section>
 
               {/* Timestamp */}
-              <div>
-                <p className='text-xs text-gray-500 text-right'>
-                  Generated on: {moment(report?.timestamp).format("LLL")}
+              <section className="pt-4">
+                <p className="text-xs text-gray-500 text-right">
+                  Generated on: {report?.timestamp ? moment(report.timestamp).format("LLL") : 'N/A'}
                 </p>
-              </div>
-
+              </section>
             </div>
-          </DialogDescription>
-        </DialogHeader>
+          </div>
+        </DialogDescription>
       </DialogContent>
     </Dialog>
+
+
   )
 }
 
