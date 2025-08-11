@@ -8,7 +8,7 @@ const Navbar = () => {
     <nav className="flex w-full items-center justify-between border-t border-b border-slate-700 px-4 py-4 bg-slate-900/80 backdrop-blur-sm">
       <div className="flex items-center">
         {/*<div className="size-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-500" />*/}
-        <div className="relative h-11 w-23">  
+        <Link href="/" className="relative h-11 w-23">  
           <Image 
             src="/logo.png" 
             alt="Logo" 
@@ -17,7 +17,7 @@ const Navbar = () => {
             className="object-contain" 
             priority
           />
-        </div>
+        </Link>
         <h1 className="text-base font-bold md:text-2xl text-white">BIT-AID</h1>
       </div>
       <div className="flex items-center gap-4">
