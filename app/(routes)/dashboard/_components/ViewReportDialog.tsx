@@ -53,7 +53,7 @@ const ViewReportDialog = ({ record }: props) => {
         <CustomTrigger className="text-violet-400 hover:text-violet-300 underline-offset-4 hover:underline focus-visible:ring-violet-500">View Report</CustomTrigger>
       </DialogTrigger>
       {/* Constrain overall height so inner content can scroll */}
-      <DialogContent className="sm:max-w-2xl max-w-[95vw] max-h-[85vh] p-0 overflow-hidden bg-[#0f0d14]/95 border border-violet-900/40 backdrop-blur">
+      <DialogContent className="sm:max-w-2xl max-w-[95vw] max-h-[85vh] p-0 overflow-hidden bg-[#0f0d14]/95 border border-violet-900/40 backdrop-blur text-white [&>button[aria-label='Close']]:text-white [&>button[aria-label='Close']:hover]:text-violet-300 ">
         <DialogHeader className="px-6 pt-6 pb-3">
           <DialogTitle asChild>
             <h2 className="text-center text-2xl">Medical AI Voice Agent Report</h2>
