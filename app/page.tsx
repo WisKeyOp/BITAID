@@ -56,7 +56,7 @@ export default function HeroSectionOne() {
             conversations. Automate appointment scheduling, symptom triage, and
             follow-up care - 24/7
           </motion.p>
-          <Link href={'/sign-in'}>
+          <Link href={'/dashboard'}>
           <motion.div
             initial={{
               opacity: 0,
