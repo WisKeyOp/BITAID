@@ -50,7 +50,7 @@ const ViewReportDialog = ({ record }: props) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <CustomTrigger>View Report</CustomTrigger>
+        <CustomTrigger className="text-violet-400 hover:text-violet-300 underline-offset-4 hover:underline focus-visible:ring-violet-500">View Report</CustomTrigger>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
